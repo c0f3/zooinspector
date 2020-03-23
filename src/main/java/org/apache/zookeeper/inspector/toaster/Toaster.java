@@ -2,6 +2,33 @@ package org.apache.zookeeper.inspector.toaster;
 
 /**
  * Copy it from jtoaster 1.0.4, since mvn repo doesn't have it.
+ * <p>
+ * Java Toaster is a java utility class for your swing applications
+ * that show an animate box coming from the bottom of your screen
+ * with a notification message and/or an associated image
+ * (like msn online/offline notifications).
+ * <p>
+ * Toaster panel in windows system follow the taskbar; So if
+ * the taskbar is into the bottom the panel coming from the bottom
+ * and if the taskbar is on the top then the panel coming from the top.
+ * <p>
+ * This is a simple example of utilization:
+ * <p>
+ * import com.nitido.utils.toaster.*;
+ * import javax.swing.*;
+ * <p>
+ * public class ToasterTest
+ * {
+ * <p>
+ * public static void main(String[] args)
+ * {
+ * // Initialize toaster manager...
+ * Toaster toasterManager = new Toaster();
+ * <p>
+ * // Show a simple toaster
+ * toasterManager.showToaster( new ImageIcon( "mylogo.gif" ), "A simple toaster with an image" );
+ * }
+ * }
  */
 
 /**
@@ -33,10 +60,9 @@ package org.apache.zookeeper.inspector.toaster;
  * }
  */
 
-import java.awt.*;
-
 import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.border.EtchedBorder;
+import java.awt.*;
 
 /**
  * Class to show tosters in multiplatform
@@ -44,8 +70,7 @@ import javax.swing.border.*;
  * @author daniele piras
  *
  */
-public class Toaster
-{
+public class Toaster {
   // Width of the toster
   private int toasterWidth = 300;
 
@@ -97,8 +122,7 @@ public class Toaster
    * @author daniele piras
    *
    */
-  public Toaster()
-  {
+  public Toaster() {
     // Set default font...
     font = new Font("Arial", Font.BOLD, 12);
     // Border color
@@ -107,12 +131,9 @@ public class Toaster
     messageColor = Color.BLACK;
     useAlwaysOnTop = true;
     // Verify AlwaysOnTop Flag...
-    try
-    {
-      JWindow.class.getMethod("setAlwaysOnTop", new Class[] { Boolean.class });
-    }
-    catch (Exception e)
-    {
+    try {
+      JWindow.class.getMethod("setAlwaysOnTop", new Class[]{Boolean.class});
+    } catch (Exception e) {
       useAlwaysOnTop = false;
     }
 
@@ -124,8 +145,7 @@ public class Toaster
    * @author daniele piras
    *
    */
-  class SingleToaster extends javax.swing.JWindow
-  {
+  class SingleToaster extends javax.swing.JWindow {
     private static final long serialVersionUID = 1L;
 
     // Label to store Icon
@@ -137,16 +157,14 @@ public class Toaster
     /***
      * Simple costructor that initialized components...
      */
-    public SingleToaster()
-    {
+    public SingleToaster() {
       initComponents();
     }
 
     /***
      * Function to initialized components
      */
-    private void initComponents()
-    {
+    private void initComponents() {
 
       setSize(toasterWidth, toasterHeight);
       message.setFont(getToasterMessageFont());
@@ -172,8 +190,7 @@ public class Toaster
     /***
      * Start toaster animation...
      */
-    public void animate()
-    {
+    public void animate() {
       (new Animation(this)).start();
     }
 
@@ -182,12 +199,10 @@ public class Toaster
   /***
    * Class that manage the animation
    */
-  class Animation extends Thread
-  {
+  class Animation extends Thread {
     SingleToaster toaster;
 
-    public Animation(SingleToaster toaster)
-    {
+    public Animation(SingleToaster toaster) {
       this.toaster = toaster;
     }
 
@@ -200,22 +215,16 @@ public class Toaster
      * @param toy
      * @throws InterruptedException
      */
-    protected void animateVertically(int posx, int fromY, int toY) throws InterruptedException
-    {
+    protected void animateVertically(int posx, int fromY, int toY) throws InterruptedException {
 
       toaster.setLocation(posx, fromY);
-      if (toY < fromY)
-      {
-        for (int i = fromY; i > toY; i -= step)
-        {
+      if (toY < fromY) {
+        for (int i = fromY; i > toY; i -= step) {
           toaster.setLocation(posx, i);
           Thread.sleep(stepTime);
         }
-      }
-      else
-      {
-        for (int i = fromY; i < toY; i += step)
-        {
+      } else {
+        for (int i = fromY; i < toY; i += step) {
           toaster.setLocation(posx, i);
           Thread.sleep(stepTime);
         }
@@ -223,10 +232,8 @@ public class Toaster
       toaster.setLocation(posx, toY);
     }
 
-    public void run()
-    {
-      try
-      {
+    public void run() {
+      try {
         boolean animateFromBottom = true;
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         Rectangle screenRect = ge.getMaximumWindowBounds();
@@ -236,8 +243,7 @@ public class Toaster
         int startYPosition;
         int stopYPosition;
 
-        if (screenRect.y > 0)
-        {
+        if (screenRect.y > 0) {
           animateFromBottom = false; // Animate from top!
         }
 
@@ -247,35 +253,25 @@ public class Toaster
 
         toaster.setLocation(posx, screenHeight);
         toaster.setVisible(true);
-        if (useAlwaysOnTop)
-        {
+        if (useAlwaysOnTop) {
           toaster.setAlwaysOnTop(true);
         }
 
-        if (animateFromBottom)
-        {
+        if (animateFromBottom) {
           startYPosition = screenHeight;
           stopYPosition = startYPosition - toasterHeight - 1;
-          if (currentNumberOfToaster > 0)
-          {
+          if (currentNumberOfToaster > 0) {
             stopYPosition = stopYPosition - (maxToaster % maxToasterInSceen * toasterHeight);
-          }
-          else
-          {
+          } else {
             maxToaster = 0;
           }
-        }
-        else
-        {
+        } else {
           startYPosition = screenRect.y - toasterHeight;
           stopYPosition = screenRect.y;
 
-          if (currentNumberOfToaster > 0)
-          {
+          if (currentNumberOfToaster > 0) {
             stopYPosition = stopYPosition + (maxToaster % maxToasterInSceen * toasterHeight);
-          }
-          else
-          {
+          } else {
             maxToaster = 0;
           }
         }
@@ -290,9 +286,7 @@ public class Toaster
         currentNumberOfToaster--;
         toaster.setVisible(false);
         toaster.dispose();
-      }
-      catch (Exception e)
-      {
+      } catch (Exception e) {
         e.printStackTrace();
       }
     }
@@ -301,11 +295,9 @@ public class Toaster
   /**
    * Show a toaster with the specified message and the associated icon.
    */
-  public void showToaster(Icon icon, String msg)
-  {
+  public void showToaster(Icon icon, String msg) {
     SingleToaster singleToaster = new SingleToaster();
-    if (icon != null)
-    {
+    if (icon != null) {
       singleToaster.iconLabel.setIcon(icon);
     }
     singleToaster.message.setText(msg);
@@ -315,16 +307,14 @@ public class Toaster
   /**
    * Show a toaster with the specified message.
    */
-  public void showToaster(String msg)
-  {
+  public void showToaster(String msg) {
     showToaster(null, msg);
   }
 
   /**
    * @return Returns the font
    */
-  public Font getToasterMessageFont()
-  {
+  public Font getToasterMessageFont() {
     // TODO Auto-generated method stub
     return font;
   }
@@ -332,16 +322,14 @@ public class Toaster
   /**
    * Set the font for the message
    */
-  public void setToasterMessageFont(Font f)
-  {
+  public void setToasterMessageFont(Font f) {
     font = f;
   }
 
   /**
    * @return Returns the borderColor.
    */
-  public Color getBorderColor()
-  {
+  public Color getBorderColor() {
     return borderColor;
   }
 
@@ -349,16 +337,14 @@ public class Toaster
    * @param borderColor
    *          The borderColor to set.
    */
-  public void setBorderColor(Color borderColor)
-  {
+  public void setBorderColor(Color borderColor) {
     this.borderColor = borderColor;
   }
 
   /**
    * @return Returns the displayTime.
    */
-  public int getDisplayTime()
-  {
+  public int getDisplayTime() {
     return displayTime;
   }
 
@@ -366,16 +352,14 @@ public class Toaster
    * @param displayTime
    *          The displayTime to set.
    */
-  public void setDisplayTime(int displayTime)
-  {
+  public void setDisplayTime(int displayTime) {
     this.displayTime = displayTime;
   }
 
   /**
    * @return Returns the margin.
    */
-  public int getMargin()
-  {
+  public int getMargin() {
     return margin;
   }
 
@@ -383,16 +367,14 @@ public class Toaster
    * @param margin
    *          The margin to set.
    */
-  public void setMargin(int margin)
-  {
+  public void setMargin(int margin) {
     this.margin = margin;
   }
 
   /**
    * @return Returns the messageColor.
    */
-  public Color getMessageColor()
-  {
+  public Color getMessageColor() {
     return messageColor;
   }
 
@@ -400,16 +382,14 @@ public class Toaster
    * @param messageColor
    *          The messageColor to set.
    */
-  public void setMessageColor(Color messageColor)
-  {
+  public void setMessageColor(Color messageColor) {
     this.messageColor = messageColor;
   }
 
   /**
    * @return Returns the step.
    */
-  public int getStep()
-  {
+  public int getStep() {
     return step;
   }
 
@@ -417,16 +397,14 @@ public class Toaster
    * @param step
    *          The step to set.
    */
-  public void setStep(int step)
-  {
+  public void setStep(int step) {
     this.step = step;
   }
 
   /**
    * @return Returns the stepTime.
    */
-  public int getStepTime()
-  {
+  public int getStepTime() {
     return stepTime;
   }
 
@@ -434,16 +412,14 @@ public class Toaster
    * @param stepTime
    *          The stepTime to set.
    */
-  public void setStepTime(int stepTime)
-  {
+  public void setStepTime(int stepTime) {
     this.stepTime = stepTime;
   }
 
   /**
    * @return Returns the toasterColor.
    */
-  public Color getToasterColor()
-  {
+  public Color getToasterColor() {
     return toasterColor;
   }
 
@@ -451,16 +427,14 @@ public class Toaster
    * @param toasterColor
    *          The toasterColor to set.
    */
-  public void setToasterColor(Color toasterColor)
-  {
+  public void setToasterColor(Color toasterColor) {
     this.toasterColor = toasterColor;
   }
 
   /**
    * @return Returns the toasterHeight.
    */
-  public int getToasterHeight()
-  {
+  public int getToasterHeight() {
     return toasterHeight;
   }
 
@@ -468,16 +442,14 @@ public class Toaster
    * @param toasterHeight
    *          The toasterHeight to set.
    */
-  public void setToasterHeight(int toasterHeight)
-  {
+  public void setToasterHeight(int toasterHeight) {
     this.toasterHeight = toasterHeight;
   }
 
   /**
    * @return Returns the toasterWidth.
    */
-  public int getToasterWidth()
-  {
+  public int getToasterWidth() {
     return toasterWidth;
   }
 
@@ -485,8 +457,7 @@ public class Toaster
    * @param toasterWidth
    *          The toasterWidth to set.
    */
-  public void setToasterWidth(int toasterWidth)
-  {
+  public void setToasterWidth(int toasterWidth) {
     this.toasterWidth = toasterWidth;
   }
 

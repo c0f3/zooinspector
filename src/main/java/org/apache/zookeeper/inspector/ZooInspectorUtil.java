@@ -1,20 +1,18 @@
 package org.apache.zookeeper.inspector;
 
+import javax.swing.tree.TreePath;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.tree.TreePath;
-
-public class ZooInspectorUtil
-{
+public class ZooInspectorUtil {
   /**
    * convert TreePath to ZNodePath
+   *
    * @param treePath
    * @return
    */
-  public static String treePathToZnodePath(TreePath treePath)
-  {
+  public static String treePathToZnodePath(TreePath treePath) {
     if (treePath == null) {
       return null;
     }
@@ -25,15 +23,13 @@ public class ZooInspectorUtil
     }
 
     String znodePath = "";
-    for (int i = 1; i < objects.length; i++)
-    {
+    for (int i = 1; i < objects.length; i++) {
       znodePath += ("/" + objects[i].toString());
     }
     return znodePath;
   }
 
-  public static List<String> treePathToZnodePath(TreePath[] treePaths)
-  {
+  public static List<String> treePathToZnodePath(TreePath[] treePaths) {
     if (treePaths == null || treePaths.length == 0) {
       return Collections.emptyList();
     }

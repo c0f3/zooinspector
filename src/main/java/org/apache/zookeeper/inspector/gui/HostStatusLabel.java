@@ -13,17 +13,17 @@ public class HostStatusLabel extends JLabel {
 
   public HostStatusLabel() {
     super(defaultText);
-    this.setMinimumSize(new Dimension(300,10));
+    this.setMinimumSize(new Dimension(300, 10));
     this.setForeground(Color.gray);
   }
 
   public void connected(String host) {
     this.setText(host);
-    this.setForeground(new Color(9,137,0));
+    this.setForeground(new Color(9, 137, 0));
   }
 
   public void disconnected() {
-    this.setText("disconnected from "+this.getText());
+    this.setText("disconnected from " + this.getText());
     this.setForeground(Color.RED);
   }
 }

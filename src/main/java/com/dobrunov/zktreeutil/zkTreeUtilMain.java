@@ -7,9 +7,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,96 +19,103 @@
 
 package com.dobrunov.zktreeutil;
 
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.PosixParser;
 
 public class zkTreeUtilMain {
 
-    final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(zkTreeUtilMain.class);
+  final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(zkTreeUtilMain.class);
 
-    public static void main(String[] args) {
-        Options options = initOptions();
-        CommandLineParser parser = new PosixParser();
-        CommandLine cmd = null;
-        try {
-            cmd = parser.parse(options, args);
-        } catch (ParseException e) {
-            usage(options);
-        }
-        zkTreeJob job = buildJob(options, cmd);
-        if (job != null) {
-            job.go();
-        }
+  public static void main(String[] args) {
+    Options options = initOptions();
+    CommandLineParser parser = new PosixParser();
+    CommandLine cmd = null;
+    try {
+      cmd = parser.parse(options, args);
+    } catch (ParseException e) {
+      usage(options);
     }
-
-    public static zkTreeJob buildJob(Options options, CommandLine cmd) {
-        zkTreeJob job = null;
-        if (!cmd.hasOption("z")) {
-            usage(options);
-        } else {
-
-            String server = cmd.getOptionValue("z");
-            String znode = "";
-            if (cmd.hasOption("p")) {
-                znode = cmd.getOptionValue("p");
-            }
-
-            if (cmd.hasOption("e") && cmd.hasOption("od")) {
-                String output_dir = cmd.getOptionValue("od");
-                job = new zkExportToFS(server, znode, output_dir);
-            } else if (cmd.hasOption("e") && cmd.hasOption("of")) {
-                String output_file = cmd.getOptionValue("of");
-                job = new zkExportToFile(server, znode, output_file);
-            } else if (cmd.hasOption("e") && cmd.hasOption("ox")) {
-                String output_xfile = cmd.getOptionValue("ox");
-                job = new zkExportToXmlFile(server, znode, output_xfile);
-            } else {
-                usage(options);
-            }
-        }
-        return job;
+    zkTreeJob job = buildJob(options, cmd);
+    if (job != null) {
+      job.go();
     }
+  }
 
-    public static void usage(Options options) {
-        HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("zkTreeUtil", options);
-        System.exit(1);
+  public static zkTreeJob buildJob(Options options, CommandLine cmd) {
+    zkTreeJob job = null;
+    if (!cmd.hasOption("z")) {
+      usage(options);
+    } else {
+
+      String server = cmd.getOptionValue("z");
+      String znode = "";
+      if (cmd.hasOption("p")) {
+        znode = cmd.getOptionValue("p");
+      }
+
+      if (cmd.hasOption("e") && cmd.hasOption("od")) {
+        String output_dir = cmd.getOptionValue("od");
+        job = new zkExportToFS(server, znode, output_dir);
+      } else if (cmd.hasOption("e") && cmd.hasOption("of")) {
+        String output_file = cmd.getOptionValue("of");
+        job = new zkExportToFile(server, znode, output_file);
+      } else if (cmd.hasOption("e") && cmd.hasOption("ox")) {
+        String output_xfile = cmd.getOptionValue("ox");
+        job = new zkExportToXmlFile(server, znode, output_xfile);
+      } else {
+        usage(options);
+      }
     }
+    return job;
+  }
 
-    public static Options initOptions() {
-        Options options = new Options();
+  public static void usage(Options options) {
+    HelpFormatter formatter = new HelpFormatter();
+    formatter.printHelp("zkTreeUtil", options);
+    System.exit(1);
+  }
 
-        options.addOption("e", "export", false, "exports the zookeeper tree");
+  public static Options initOptions() {
+    Options options = new Options();
 
-        Option outdir = OptionBuilder.withArgName("dir").hasArg()
-                .withDescription("output directory to which znode information should be written (must be a normal, empty directory)")
-                .create("od");
-        outdir.setLongOpt("output-dir");
-        options.addOption(outdir);
+    options.addOption("e", "export", false, "exports the zookeeper tree");
 
-        Option plainfile = OptionBuilder.withArgName("filename").hasArg()
-                .withDescription("output file to which znode information should be written")
-                .create("of");
-        plainfile.setLongOpt("output-file");
-        options.addOption(plainfile);
+    Option outdir = OptionBuilder.withArgName("dir").hasArg()
+        .withDescription("output directory to which znode information should be written (must be a normal, empty directory)")
+        .create("od");
+    outdir.setLongOpt("output-dir");
+    options.addOption(outdir);
 
-        Option xmlfile = OptionBuilder.withArgName("filename").hasArg()
-                .withDescription("output xml-file to which znode information should be written")
-                .create("ox");
-        xmlfile.setLongOpt("output-xmlfile");
-        options.addOption(xmlfile);
+    Option plainfile = OptionBuilder.withArgName("filename").hasArg()
+        .withDescription("output file to which znode information should be written")
+        .create("of");
+    plainfile.setLongOpt("output-file");
+    options.addOption(plainfile);
 
-        Option znodepath = OptionBuilder.withArgName("znodepath").hasArg()
-                .withDescription("path to the zookeeper subtree rootnode.")
-                .create("p");
-        znodepath.setLongOpt("path");
-        options.addOption(znodepath);
+    Option xmlfile = OptionBuilder.withArgName("filename").hasArg()
+        .withDescription("output xml-file to which znode information should be written")
+        .create("ox");
+    xmlfile.setLongOpt("output-xmlfile");
+    options.addOption(xmlfile);
 
-        Option server = OptionBuilder.withArgName("zkhosts").hasArg().isRequired(true)
-                .withDescription("zookeeper remote servers (ie \"localhost:2181\")")
-                .create("z");
-        server.setLongOpt("zookeeper");
-        options.addOption(server);
+    Option znodepath = OptionBuilder.withArgName("znodepath").hasArg()
+        .withDescription("path to the zookeeper subtree rootnode.")
+        .create("p");
+    znodepath.setLongOpt("path");
+    options.addOption(znodepath);
 
-        return options;
-    }
+    Option server = OptionBuilder.withArgName("zkhosts").hasArg().isRequired(true)
+        .withDescription("zookeeper remote servers (ie \"localhost:2181\")")
+        .create("z");
+    server.setLongOpt("zookeeper");
+    options.addOption(server);
+
+    return options;
+  }
 }

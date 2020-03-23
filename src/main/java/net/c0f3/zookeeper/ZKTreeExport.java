@@ -27,7 +27,7 @@ public class ZKTreeExport {
   }
 
   public void perform(Runnable callback) {
-    Thread t = new Thread(()-> run(callback));
+    Thread t = new Thread(() -> run(callback));
     t.start();
   }
 
@@ -43,7 +43,9 @@ public class ZKTreeExport {
       case "folder":
         job = new zkExportToFS(server, "", file.getAbsolutePath());
         break;
-        default: job=()->{};
+      default:
+        job = () -> {
+        };
     }
     job.go();
     callback.run();

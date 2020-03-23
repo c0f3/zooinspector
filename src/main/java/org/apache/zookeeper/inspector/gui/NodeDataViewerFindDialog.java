@@ -1,18 +1,11 @@
 package org.apache.zookeeper.inspector.gui;
 
-import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import org.apache.zookeeper.inspector.gui.nodeviewer.NodeViewerData;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
-import org.apache.zookeeper.inspector.gui.nodeviewer.NodeViewerData;
 
 public class NodeDataViewerFindDialog extends JDialog {
 
@@ -62,21 +55,23 @@ public class NodeDataViewerFindDialog extends JDialog {
     text.addKeyListener(new KeyListener() {
       @Override
       public void keyTyped(KeyEvent e) { }
+
       @Override
       public void keyReleased(KeyEvent e) { }
+
       @Override
       public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
-        case KeyEvent.VK_ENTER:
-          NodeDataViewerFindDialog.this.dispose();
-          String selText = text.getText();
-          dataViewer.highlight(selText);
-          break;
-        case KeyEvent.VK_ESCAPE:
-          NodeDataViewerFindDialog.this.dispose();
-          break;
-        default:
-          break;
+          case KeyEvent.VK_ENTER:
+            NodeDataViewerFindDialog.this.dispose();
+            String selText = text.getText();
+            dataViewer.highlight(selText);
+            break;
+          case KeyEvent.VK_ESCAPE:
+            NodeDataViewerFindDialog.this.dispose();
+            break;
+          default:
+            break;
         }
       }
     });

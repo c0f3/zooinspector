@@ -9,12 +9,11 @@ import java.awt.*;
  * created: 04.09.2018
  */
 public class ScreenWrapper {
-  public static Dimension getScreenResolution()
-  {
+  public static Dimension getScreenResolution() {
     GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
     GraphicsDevice[] screenDevices = ge.getScreenDevices();
 
-    if(screenDevices ==null || screenDevices.length==0) {
+    if (screenDevices == null || screenDevices.length == 0) {
       LoggerFactory.getLogger().error("cannot detect screen resolution");
       return new Dimension(1024, 768);
     }
@@ -29,8 +28,8 @@ public class ScreenWrapper {
 
   public static Point getWindowPosition(int width, int height) {
     Dimension resolution = getScreenResolution();
-    int x = (int) (resolution.getWidth()/2-width/2);
-    int y = (int) (resolution.getHeight()/2-height/2);
-    return new Point(x,y);
+    int x = (int) (resolution.getWidth() / 2 - width / 2);
+    int y = (int) (resolution.getHeight() / 2 - height / 2);
+    return new Point(x, y);
   }
 }

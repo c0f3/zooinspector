@@ -7,9 +7,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,52 +27,52 @@ import java.io.FileOutputStream;
  */
 public class zkExportToFS implements zkTreeJob {
 
-    private String zkServer;
-    private String outputDir;
-    private String start_znode;
-    private final org.slf4j.Logger logger;
+  private String zkServer;
+  private String outputDir;
+  private String start_znode;
+  private final org.slf4j.Logger logger;
 
 
-    public zkExportToFS(String zkServer, String znode, String outputDir) {
-        logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
-        this.zkServer = zkServer;
-        this.outputDir = outputDir;
-        this.start_znode = znode;
+  public zkExportToFS(String zkServer, String znode, String outputDir) {
+    logger = org.slf4j.LoggerFactory.getLogger(this.getClass());
+    this.zkServer = zkServer;
+    this.outputDir = outputDir;
+    this.start_znode = znode;
+  }
+
+  public void go() {
+    zkDumpZookeeper dump = new zkDumpZookeeper(zkServer, start_znode);
+    try {
+      TreeNode<zNode> zktree = dump.getZktree();
+      logger.info("begin write zookeeper tree to folder " + outputDir);
+      for (TreeNode<zNode> znode : zktree) {
+        if (znode.data.has_children) {
+          File f = new File(outputDir + znode.data.path);
+          boolean s = f.mkdirs();
+        }
+        writeZnode(znode.data);
+      }
+      logger.info("end write zookeeper tree to folder " + outputDir);
+    } catch (Exception e) {
+      logger.error(e.getMessage());
     }
+  }
 
-    public void go() {
-        zkDumpZookeeper dump = new zkDumpZookeeper(zkServer, start_znode);
+  private void writeZnode(zNode znode) {
+    if (znode.data != null && znode.data.length > 0) {
+      String str = new String(znode.data);
+      if (!str.equals("null")) {
+        String outFile = znode.has_children ? "_znode" : znode.path;
         try {
-            TreeNode<zNode> zktree = dump.getZktree();
-            logger.info("begin write zookeeper tree to folder " + outputDir);
-            for (TreeNode<zNode> znode : zktree) {
-                if (znode.data.has_children) {
-                    File f = new File(outputDir + znode.data.path);
-                    boolean s = f.mkdirs();
-                }
-                writeZnode(znode.data);
-            }
-            logger.info("end write zookeeper tree to folder " + outputDir);
+          FileOutputStream out = new FileOutputStream(outputDir + "\\" + outFile);
+          out.write(znode.data);
+          out.flush();
+          out.close();
         } catch (Exception e) {
-            logger.error(e.getMessage());
+          logger.error(e.getMessage());
         }
+      }
     }
-
-    private void writeZnode(zNode znode) {
-        if (znode.data != null && znode.data.length > 0) {
-            String str = new String(znode.data);
-            if (!str.equals("null")) {
-                String outFile = znode.has_children ? "_znode" : znode.path;
-                try {
-                    FileOutputStream out = new FileOutputStream(outputDir + "\\" + outFile);
-                    out.write(znode.data);
-                    out.flush();
-                    out.close();
-                } catch (Exception e) {
-                    logger.error(e.getMessage());
-                }
-            }
-        }
-    }
+  }
 
 }

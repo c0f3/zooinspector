@@ -1,7 +1,12 @@
 package org.apache.zookeeper.inspector;
 
-import java.awt.Dimension;
-import java.awt.Insets;
+import javax.accessibility.AccessibleContext;
+import javax.accessibility.AccessibleRole;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -10,20 +15,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import javax.accessibility.AccessibleContext;
-import javax.accessibility.AccessibleRole;
-import javax.swing.DefaultListModel;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.ListModel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 public class ListInput extends JPanel implements ListSelectionListener,
     ActionListener {
@@ -50,35 +41,32 @@ public class ListInput extends JPanel implements ListSelectionListener,
     scrollPane = new JScrollPane(list);
     scrollPane.setVisible(false);
     add(scrollPane);
-    
+
     textfield.addKeyListener(new KeyListener() {
-      
+
       @Override
-      public void keyTyped(KeyEvent e)
-      {
+      public void keyTyped(KeyEvent e) {
         // TODO Auto-generated method stub
         scrollPane.setVisible(true);
       }
-      
+
       @Override
-      public void keyReleased(KeyEvent e)
-      {
+      public void keyReleased(KeyEvent e) {
         // TODO Auto-generated method stub
-        
+
       }
-      
+
       @Override
-      public void keyPressed(KeyEvent e)
-      {
+      public void keyPressed(KeyEvent e) {
         // TODO Auto-generated method stub
 //      System.out.println("keyPressed: " + e.getKeyCode());
         switch (e.getKeyCode()) {
-        case KeyEvent.VK_ENTER:
-        case KeyEvent.VK_ESCAPE:
-          scrollPane.setVisible(false);
-          break;
-        default:
-          break;
+          case KeyEvent.VK_ENTER:
+          case KeyEvent.VK_ESCAPE:
+            scrollPane.setVisible(false);
+            break;
+          default:
+            break;
         }
 
       }
@@ -137,8 +125,9 @@ public class ListInput extends JPanel implements ListSelectionListener,
   @Override
   public void valueChanged(ListSelectionEvent e) {
     Object obj = list.getSelectedValue();
-    if (obj != null)
+    if (obj != null) {
       textfield.setText(obj.toString());
+    }
   }
 
   @Override
@@ -199,7 +188,7 @@ public class ListInput extends JPanel implements ListSelectionListener,
   }
 
   public void appendResultSet(ResultSet results, int index,
-      boolean toTitleCase) {
+                              boolean toTitleCase) {
     textfield.setText("");
     DefaultListModel model = new DefaultListModel();
     try {
@@ -216,8 +205,9 @@ public class ListInput extends JPanel implements ListSelectionListener,
       System.err.println("appendResultSet: " + ex.toString());
     }
     list.setModel(model);
-    if (model.getSize() > 0)
+    if (model.getSize() > 0) {
       list.setSelectedIndex(0);
+    }
   }
 
   class ListInputLabel extends JLabel {
@@ -262,8 +252,9 @@ public class ListInput extends JPanel implements ListSelectionListener,
   // Accessibility Support
   @Override
   public AccessibleContext getAccessibleContext() {
-    if (accessibleContext == null)
+    if (accessibleContext == null) {
       accessibleContext = new AccessibleOpenList();
+    }
     return accessibleContext;
   }
 
@@ -272,8 +263,9 @@ public class ListInput extends JPanel implements ListSelectionListener,
     @Override
     public String getAccessibleName() {
       System.out.println("getAccessibleName: " + accessibleName);
-      if (accessibleName != null)
+      if (accessibleName != null) {
         return accessibleName;
+      }
       return label.getText();
     }
 
@@ -284,7 +276,7 @@ public class ListInput extends JPanel implements ListSelectionListener,
   }
 
   public static void main(String[] a) {
-    String[] fontNames = new String[] { "Roman", "Times Roman" };
+    String[] fontNames = new String[]{"Roman", "Times Roman"};
     ListInput lstFontName = new ListInput(fontNames, "Name:");
     lstFontName.setDisplayedMnemonic('n');
     lstFontName.setToolTipText("Font name");
@@ -296,7 +288,7 @@ public class ListInput extends JPanel implements ListSelectionListener,
       }
     });
     f.getContentPane().add(lstFontName);
-    
+
     f.pack();
     f.setSize(new Dimension(300, 200));
     f.setVisible(true);

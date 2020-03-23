@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,31 +16,6 @@
  * limitations under the License.
  */
 package org.apache.zookeeper.inspector.gui.nodeviewer;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JToolBar;
-import javax.swing.SwingWorker;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultHighlighter;
-import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
-import javax.swing.text.DefaultStyledDocument;
 
 import org.apache.zookeeper.ZooKeeper.States;
 import org.apache.zookeeper.inspector.gui.NodeDataViewerFindDialog;
@@ -53,6 +28,20 @@ import org.fife.ui.rsyntaxtextarea.TextEditorPane;
 import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
 import org.fife.ui.rtextarea.RTextScrollPane;
+
+import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
+import javax.swing.text.DefaultStyledDocument;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * A node viewer for displaying the data for the currently selected node
@@ -117,22 +106,22 @@ public class NodeViewerData extends ZooInspectorNodeViewer {
   }
 
   /**
-     *
-     */
+   *
+   */
   public NodeViewerData() {
     this.setLayout(new BorderLayout());
-    
+
     TextEditorPane textArea = new TextEditorPane();
     //this.dataArea = new JTextPane();
     textArea.setCodeFoldingEnabled(true);
     textArea.setShowMatchedBracketPopup(true);
-    
-    AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory)TokenMakerFactory.getDefaultInstance();
+
+    AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
     atmf.putMapping("text/yaml", "org.fife.ui.rsyntaxtextarea.modes.YamlTokenMaker");
-    textArea.setSyntaxEditingStyle("text/yaml");    
-     
+    textArea.setSyntaxEditingStyle("text/yaml");
+
     this.dataArea = textArea;
-    
+
     this.highlighter = (DefaultHighlighter) dataArea.getHighlighter();
 
     // add highlighter
@@ -178,7 +167,7 @@ public class NodeViewerData extends ZooInspectorNodeViewer {
     scroller.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     scroller.setLineNumbersEnabled(true);
     scroller.setFoldIndicatorEnabled(true);
-    
+
     this.add(scroller, BorderLayout.CENTER);
     this.add(this.toolbar, BorderLayout.NORTH);
     final JButton saveButton = new JButton(ZooInspectorIconResources.getSaveIcon());
@@ -223,26 +212,26 @@ public class NodeViewerData extends ZooInspectorNodeViewer {
 
       public void actionPerformed(ActionEvent e) {
         // if (zooInspectorManager != null && zooInspectorManager.getZookeeperStates() == States.CONNECTED) {
-          NodeDataViewerFindDialog dialog = new NodeDataViewerFindDialog(NodeViewerData.this);
-          dialog.setVisible(true);
+        NodeDataViewerFindDialog dialog = new NodeDataViewerFindDialog(NodeViewerData.this);
+        dialog.setVisible(true);
         // }
       }
     });
     this.toolbar.add(searchButton);
-    
+
     this.toolbar.add(new JLabel("   Theme:"));
-    
+
     // Add editor theme selector
-    String[] themes = { "default", "dark", "eclipse", "idea", "monokai", "vs" };
+    String[] themes = {"default", "dark", "eclipse", "idea", "monokai", "vs"};
     JComboBox cmbThemes = new JComboBox(themes);
     cmbThemes.setPreferredSize(new Dimension(200, 24));
     cmbThemes.setMaximumSize(new Dimension(200, 24));
     cmbThemes.setMinimumSize(new Dimension(200, 24));
     cmbThemes.setSelectedIndex(1);
-    applyTheme((String)cmbThemes.getSelectedItem());
+    applyTheme((String) cmbThemes.getSelectedItem());
     cmbThemes.addActionListener(e -> {
-      JComboBox cb = (JComboBox)e.getSource();
-      applyTheme((String)cb.getSelectedItem());
+      JComboBox cb = (JComboBox) e.getSource();
+      applyTheme((String) cb.getSelectedItem());
     });
     this.toolbar.add(cmbThemes);
 
@@ -301,19 +290,18 @@ public class NodeViewerData extends ZooInspectorNodeViewer {
                 "Error retrieving data for node: " + NodeViewerData.this.selectedNode, e);
           }
           NodeViewerData.this.dataArea.setText(data);
-          
+
           if (data != null && data.length() > 0) {
             if (data.charAt(0) == '<') {
               NodeViewerData.this.dataArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_XML);
               NodeViewerData.this.dataArea.setCodeFoldingEnabled(true);
-            }
-            else {
+            } else {
               NodeViewerData.this.dataArea.setSyntaxEditingStyle("text/yaml");
               //NodeViewerData.this.dataArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JSON_WITH_COMMENTS);
               NodeViewerData.this.dataArea.setCodeFoldingEnabled(true);
             }
           }
-          
+
           NodeViewerData.this.dataArea.setCaretPosition(0);
           // NodeViewerData.this.dataArea.moveCaretPosition(0);
 //          long end = System.currentTimeMillis();
