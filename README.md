@@ -1,7 +1,7 @@
 zooinspector
 ============
 
-current version: __1.1-SNAPSHOT__
+current version: __1.2-SNAPSHOT__
 
 An improved zookeeper inspector
 
@@ -23,7 +23,7 @@ Build
 - $mvn clean package
 
 Run
-- java -jar target/zooinspector-1.1-SNAPSHOT-jar-with-dependencies.jar
+- java -jar target/zooinspector-1.2-SNAPSHOT-jar-with-dependencies.jar
 
 [1]: https://github.com/ctapmex/zkTreeUtil
 [2]: https://github.com/kostapc/zkTreeUtil
