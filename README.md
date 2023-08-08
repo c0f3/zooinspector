@@ -25,5 +25,8 @@ Build
 Run
 - java -jar target/zooinspector-1.2-SNAPSHOT-jar-with-dependencies.jar
 
+Status
+- Maintained, 2023!
+
 [1]: https://github.com/ctapmex/zkTreeUtil
 [2]: https://github.com/kostapc/zkTreeUtil
